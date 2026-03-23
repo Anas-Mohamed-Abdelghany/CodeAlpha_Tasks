@@ -1,5 +1,15 @@
 # 💳 Credit Scoring Model
 ### CodeAlpha Internship — Task 1
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat&logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.x-F7931E?style=flat&logo=scikitlearn&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-1.2x-013243?style=flat&logo=numpy&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-2.x-150458?style=flat&logo=pandas&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-3.x-11557C?style=flat&logo=plotly&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?style=flat&logo=jupyter&logoColor=white)
+![Kaggle](https://img.shields.io/badge/Kaggle-Dataset-20BEFF?style=flat&logo=kaggle&logoColor=white)
+![RandomForest](https://img.shields.io/badge/Model-Random%20Forest-228B22?style=flat)
+![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat)
+![Internship](https://img.shields.io/badge/CodeAlpha-Internship-blueviolet?style=flat)
 
 > A machine learning pipeline that predicts an individual's creditworthiness using past financial data, built with Random Forest and scikit-learn.
 
