@@ -141,7 +141,6 @@ Raw CSV (4,995 rows × 87 cols)
 ---
 
 ### Top 10 Most Predictive Features (Permutation Importance)
-![Feature Importance](images/feature_importance.png)
 
 | Rank | Feature | Importance Score | Meaning |
 |---|---|---|---|
