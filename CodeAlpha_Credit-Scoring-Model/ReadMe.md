@@ -9,9 +9,9 @@
 
 Credit scoring is the backbone of modern lending decisions. This project builds a full end-to-end classification pipeline that:
 
-- Ingests raw financial data
+- Ingests raw synthetic financial data (4,995 customers, 87 columns)
 - Engineers a binary target (`Is_Bad_Credit`) from continuous credit scores
-- Preprocesses mixed numeric/categorical features through a robust sklearn pipeline
+- Preprocesses 84 mixed numeric/categorical features through a robust sklearn pipeline
 - Trains and tunes a **Random Forest Classifier**
 - Evaluates performance using **Precision, Recall, F1-Score, and Confusion Matrix**
 - Interprets the model using **Permutation Importance**
@@ -22,13 +22,26 @@ Credit scoring is the backbone of modern lending decisions. This project builds 
 
 **Source:** [Kaggle — Credit Scoring Dataset by SyncoraAI](https://www.kaggle.com/datasets/syncoraai/credit-scoring-dataset)
 
-| Field | Description |
+| Property | Value |
 |---|---|
-| `CUST_ID` | Unique customer identifier (dropped — not a feature) |
-| `CREDIT_SCORE` | Continuous credit score (used to derive target, then dropped) |
-| `DEFAULT` | Whether the customer defaulted (dropped — future leakage) |
-| `Is_Bad_Credit` | ✅ **Target** — 1 if `CREDIT_SCORE < 600`, else 0 |
-| Other columns | Income, debts, payment history, etc. |
+| Total Rows | 4,995 |
+| Total Columns | 87 |
+| Duplicate Rows | 0 |
+| Missing Values | 0 |
+| Numeric Features | 85 (51 float64, 34 int64) |
+| Categorical Features | 2 object columns |
+
+### Key Columns
+
+| Column | Type | Role |
+|---|---|---|
+| `CUST_ID` | ID | Dropped — not a feature |
+| `CREDIT_SCORE` | Continuous | Used to derive target, then dropped |
+| `DEFAULT` | Binary | Dropped — future data leakage |
+| `CAT_GAMBLING` | Categorical | Encoded (No / Low / High) |
+| `CAT_DEBT`, `CAT_CREDIT_CARD`, etc. | Categorical | Encoded |
+| `R_DEBT_INCOME`, `INCOME`, `SAVINGS`… | Numeric | Core predictive features |
+| **`Is_Bad_Credit`** | **Binary** | ✅ **Target** — 1 if `CREDIT_SCORE < 600`, else 0 |
 
 ---
 
@@ -37,13 +50,15 @@ Credit scoring is the backbone of modern lending decisions. This project builds 
 ```
 CodeAlpha_Task1/
 │
-├── CodeAlpha_Task1.ipynb       # Main notebook
-├── README.md                   # This file
+├── CodeAlpha_Task1.ipynb             # Main notebook
+├── README.md                         # This file
 │
-└── images/                     # 📁 Output images here
-    ├── confusion_matrix_baseline.png
-    ├── confusion_matrix_tuned.png
-    └── feature_importance.png
+├── images/
+│   ├── confusion_matrix_baseline.png
+│   ├── confusion_matrix_tuned.png
+│   └── feature_importance.png
+│
+└── synthetic_e2dabba50a1a4fbcabd601f7883eef1e.csv
 ```
 
 ---
@@ -51,44 +66,52 @@ CodeAlpha_Task1/
 ## 🔄 Pipeline Architecture
 
 ```
-Raw CSV Data
-     │
-     ▼
-┌─────────────────┐
-│   Data Audit    │  → Check size, types, duplicates, class balance
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Stratified Split│  → Train (70%) / Val (15%) / Test (15%)
-└────────┬────────┘
-         │
-         ▼
-┌──────────────────────────────────────────┐
-│           ColumnTransformer              │
-│  ┌──────────────┐  ┌───────────────────┐ │
-│  │   Numeric    │  │   Categorical     │ │
-│  │  - Imputer   │  │  - Imputer        │ │
-│  │  - Scaler    │  │  - OneHotEncoder  │ │
-│  └──────────────┘  └───────────────────┘ │
-└────────┬─────────────────────────────────┘
-         │
-         ▼
-┌──────────────────────┐
-│  RandomForestClassifier│  class_weight='balanced'
-└────────┬─────────────┘
-         │
-         ▼
-┌──────────────────┐
-│  Evaluation &    │  → Classification Report + Confusion Matrix
-│  Interpretability│  → Permutation Importance (Top 10 features)
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│ Hyperparameter   │  → RandomizedSearchCV (10 combos, 3-fold CV)
-│     Tuning       │  → Best model selected by F1-Score
-└──────────────────┘
+Raw CSV (4,995 rows × 87 cols)
+           │
+           ▼
+  ┌─────────────────┐
+  │   Data Audit    │  4,995 rows | 0 duplicates | 0 missing values
+  └────────┬────────┘
+           │
+           ▼
+  ┌──────────────────────┐
+  │  Feature Engineering │  Is_Bad_Credit = (CREDIT_SCORE < 600)
+  │  + Leakage Removal   │  Drop: CUST_ID, CREDIT_SCORE, DEFAULT
+  └────────┬─────────────┘
+           │  84 features remain
+           ▼
+  ┌─────────────────────┐
+  │  Stratified Split   │  Train 70% (3,497) | Val 15% | Test 15%
+  └────────┬────────────┘
+           │
+           ▼
+  ┌──────────────────────────────────────────────┐
+  │              ColumnTransformer               │
+  │  ┌────────────────┐   ┌────────────────────┐ │
+  │  │    Numeric     │   │    Categorical     │ │
+  │  │  82 features   │   │  CAT_GAMBLING +    │ │
+  │  │ Imputer(median)│   │  other cat cols    │ │
+  │  │ StandardScaler │   │  Imputer + OHE     │ │
+  │  └────────────────┘   └────────────────────┘ │
+  └────────┬─────────────────────────────────────┘
+           │
+           ▼
+  ┌────────────────────────┐
+  │  RandomForestClassifier│  n_estimators=100
+  │  class_weight='balanced│  Handles class imbalance
+  └────────┬───────────────┘
+           │
+           ▼
+  ┌────────────────────┐     ┌────────────────────────┐
+  │   Evaluation       │     │  Permutation Importance│
+  │  (Validation Set)  │     │  Top 10 features ranked│
+  └────────┬───────────┘     └────────────────────────┘
+           │
+           ▼
+  ┌───────────────────────┐
+  │  RandomizedSearchCV   │  10 combos | 3-fold CV | F1 scoring
+  │  Hyperparameter Tuning│
+  └───────────────────────┘
 ```
 
 ---
@@ -98,50 +121,65 @@ Raw CSV Data
 ### Confusion Matrix — Baseline Model
 ![Baseline Confusion Matrix](images/confusion_matrix_baseline.png)
 
-*Replace this placeholder by running the notebook and saving the figure with:*
-```python
-plt.savefig('images/confusion_matrix_baseline.png', dpi=150, bbox_inches='tight')
-```
+| | Predicted: Good (0) | Predicted: Bad (1) |
+|---|---|---|
+| **Actual: Good (0)** | ✅ 262 (TN) | ❌ 91 (FP) |
+| **Actual: Bad (1)** | ❌ 73 (FN) | ✅ 322 (TP) |
 
 ---
 
 ### Confusion Matrix — Tuned Model
 ![Tuned Confusion Matrix](images/confusion_matrix_tuned.png)
 
-*Replace this placeholder by saving the tuned model's confusion matrix plot.*
+| | Predicted: Good (0) | Predicted: Bad (1) |
+|---|---|---|
+| **Actual: Good (0)** | ✅ 264 (TN) | ❌ 89 (FP) |
+| **Actual: Bad (1)** | ❌ 72 (FN) | ✅ 323 (TP) |
+
+> Tuning improved TN by **+2** and TP by **+1**, reducing both false positives and false negatives.
 
 ---
 
 ### Top 10 Most Predictive Features (Permutation Importance)
 ![Feature Importance](images/feature_importance.png)
 
-*Replace this placeholder by saving the feature importance bar chart:*
-```python
-feature_importances.sort_values(ascending=False).head(10).plot(kind='barh')
-plt.title("Top 10 Features — Permutation Importance")
-plt.savefig('images/feature_importance.png', dpi=150, bbox_inches='tight')
-```
+| Rank | Feature | Importance Score | Meaning |
+|---|---|---|---|
+| 1 | `R_DEBT_INCOME` | 0.0821 | Debt-to-income ratio — **strongest signal** |
+| 2 | `R_UTILITIES_DEBT` | 0.0111 | Utilities spending relative to debt |
+| 3 | `DEBT` | 0.0099 | Raw total debt amount |
+| 4 | `R_EXPENDITURE_DEBT` | 0.0080 | Total expenditure vs debt ratio |
+| 5 | `R_EXPENDITURE` | 0.0044 | Overall spending behaviour |
+| 6 | `R_TAX_DEBT` | 0.0033 | Tax payments relative to debt |
+| 7 | `T_HEALTH_6` | 0.0032 | Health spending (last 6 months) |
+| 8 | `R_HEALTH_SAVINGS` | 0.0032 | Health cost relative to savings |
+| 9 | `T_HEALTH_12` | 0.0025 | Health spending (last 12 months) |
+| 10 | `R_GROCERIES` | 0.0024 | Grocery spending ratio |
+
+**Key Insight:** `R_DEBT_INCOME` is by far the most important feature — ~7× higher than the second feature. Debt-related ratios dominate the top 10, confirming that spending behaviour relative to debt is the primary driver of credit risk.
 
 ---
 
 ## 📈 Evaluation Metrics
 
-The model is evaluated using the following metrics on the **Validation Set**:
+Calculated from the confusion matrices on the **Validation Set (748 samples)**:
 
-| Metric | Description |
-|---|---|
-| **Precision** | Of all predicted bad-credit customers, how many actually were? |
-| **Recall** | Of all actual bad-credit customers, how many did we catch? |
-| **F1-Score** | Harmonic mean of Precision & Recall — the primary metric |
-| **Confusion Matrix** | Visual breakdown of TP, FP, TN, FN |
+| Metric | Baseline Model | Tuned Model |
+|---|---|---|
+| **Accuracy** | 78.1% | 78.5% |
+| **Precision (Bad Credit)** | 78.0% | 78.4% |
+| **Recall (Bad Credit)** | 81.5% | 81.8% |
+| **F1-Score (Bad Credit)** | ~79.7% | ~80.1% |
+| **False Positives** | 91 | 89 |
+| **False Negatives** | 73 | 72 |
 
-> ⚠️ Since this is an imbalanced classification problem, `class_weight='balanced'` is used and F1-Score is prioritized over raw accuracy.
+> ⚠️ **Why F1 over Accuracy?** The dataset has class imbalance. Catching bad credit customers (high Recall) matters most to avoid lending risk, so F1-Score is the primary metric. `class_weight='balanced'` was used to handle this automatically.
 
 ---
 
 ## ⚙️ Hyperparameter Tuning
 
-`RandomizedSearchCV` was used to search over the following space:
+`RandomizedSearchCV` searched over:
 
 ```python
 param_dist = {
@@ -150,27 +188,23 @@ param_dist = {
     'classifier__min_samples_leaf': [1, 2, 4, 8],
     'classifier__max_features': ['sqrt', 'log2']
 }
+# 10 random combinations | 3-fold CV | scored by F1
 ```
-
-- **Strategy:** 10 random combinations, 3-fold cross-validation
-- **Scoring:** F1-Score
 
 ---
 
 ## 🚀 How to Run
 
-1. **Clone/download** the notebook file
-2. **Set up Kaggle API** credentials to download the dataset:
+1. **Set up Kaggle API** credentials, then:
    ```bash
    kaggle datasets download -d syncoraai/credit-scoring-dataset
    unzip credit-scoring-dataset.zip
    ```
-3. **Install dependencies:**
+2. **Install dependencies:**
    ```bash
    pip install pandas scikit-learn matplotlib numpy
    ```
-4. **Run all cells** in `CodeAlpha_Task1.ipynb` top to bottom
-5. **Save your output images** into the `images/` folder (see commands above)
+3. **Run all cells** in `CodeAlpha_Task1.ipynb` top to bottom
 
 ---
 
@@ -181,7 +215,7 @@ param_dist = {
 | Python 3 | Core language |
 | pandas | Data loading & manipulation |
 | scikit-learn | Pipeline, preprocessing, modeling, evaluation |
-| matplotlib | Visualization |
+| matplotlib | Confusion matrix & feature importance plots |
 | Kaggle API | Dataset download |
 
 ---
