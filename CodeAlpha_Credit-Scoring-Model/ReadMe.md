@@ -40,12 +40,10 @@ CodeAlpha_Task1/
 ├── CodeAlpha_Task1.ipynb       # Main notebook
 ├── README.md                   # This file
 │
-├── images/                     # 📁 Place your output images here
-│   ├── confusion_matrix_baseline.png
-│   ├── confusion_matrix_tuned.png
-│   └── feature_importance.png
-│
-└── synthetic_e2d...csv         # Raw dataset (after Kaggle download)
+└── images/                     # 📁 Output images here
+    ├── confusion_matrix_baseline.png
+    ├── confusion_matrix_tuned.png
+    └── feature_importance.png
 ```
 
 ---
@@ -96,8 +94,6 @@ Raw CSV Data
 ---
 
 ## 🖼️ Results & Visualizations
-
-> **How to add images:** After running the notebook, save the matplotlib figures and place them in the `images/` folder. Then they'll appear here automatically.
 
 ### Confusion Matrix — Baseline Model
 ![Baseline Confusion Matrix](images/confusion_matrix_baseline.png)
@@ -192,9 +188,9 @@ param_dist = {
 
 ## 👤 Author
 
-**Your Name**
+**Anas MOhamed**
 CodeAlpha Machine Learning Internship — Task 1
-[LinkedIn](#) · [GitHub](#)
+[LinkedIn](https://www.linkedin.com/in/anas-mohamed-716959313/) · [GitHub](https://github.com/Anas-Mohamed-Abdelghany)
 
 ---
 
