@@ -231,7 +231,7 @@ param_dist = {
 
 ## 👤 Author
 
-**Anas MOhamed**
+**Anas Mohamed**
 CodeAlpha Machine Learning Internship — Task 1
 [LinkedIn](https://www.linkedin.com/in/anas-mohamed-716959313/) · [GitHub](https://github.com/Anas-Mohamed-Abdelghany)
 
