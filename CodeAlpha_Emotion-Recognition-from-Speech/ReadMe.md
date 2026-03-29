@@ -56,30 +56,13 @@ Moving from structured tabular data to unstructured audio, this project builds a
 ```text
 CodeAlpha_Task2/
 │
-<<<<<<< HEAD
-├── CodeAlpha_Task2.ipynb         # Main Deep Learning notebook
-├── README.md                     # This file
+├── CodeAlpha_Task2_SER.ipynb         # Main Deep Learning notebook
+├── README.md                         # This file
 │
 └── images/
     ├── cnn_training_curve.png
     ├── confusion_matrix_mlp.png
     └── confusion_matrix_cnn.png
-=======
-├── CodeAlpha_Task2_SER.ipynb         # Main Deep Learning notebook
-├── README.md                         # This file
-│
-├── images/
-│   ├── cnn_training_curve.png
-│   ├── confusion_matrix_mlp.png
-│   └── confusion_matrix_cnn.png
-│
-├── models/
-│   └── speech_emotion_cnn_v1.keras   # Saved production model
-│
-└── Crema/                            # Downloaded dataset directory
-    ├── 1001_DFA_ANG_XX.wav
-    └── ...
->>>>>>> edf71dcc64658b44a2e78d7b078a0576bb76aad7
 ```
 
 ---
@@ -146,11 +129,9 @@ Raw Audio (.wav files)
 ---
 
 ## 📈 Evaluation Metrics
-<<<<<<< HEAD
-![alt text](images/confusion_matrix_cnn_test.png)
-=======
 
->>>>>>> edf71dcc64658b44a2e78d7b078a0576bb76aad7
+![Final Production Test](images/confusion_matrix_cnn_test.png)
+
 Evaluated on the **Locked Test Set** (Unseen Actors):
 
 | Metric | MLP (Baseline 1D Mean) | CNN (2D Spatial MFCCs) |
@@ -175,11 +156,7 @@ Evaluated on the **Locked Test Set** (Unseen Actors):
    ```bash
    pip install tensorflow keras librosa soundfile pandas numpy matplotlib scikit-learn
    ```
-<<<<<<< HEAD
-3. **Run all cells** in `CodeAlpha_Task2.ipynb`. *(Note: Feature extraction takes ~3-5 minutes depending on CPU).*
-=======
 3. **Run all cells** in `CodeAlpha_Task2_SER.ipynb`. *(Note: Feature extraction takes ~3-5 minutes depending on CPU).*
->>>>>>> edf71dcc64658b44a2e78d7b078a0576bb76aad7
 
 ---
 
