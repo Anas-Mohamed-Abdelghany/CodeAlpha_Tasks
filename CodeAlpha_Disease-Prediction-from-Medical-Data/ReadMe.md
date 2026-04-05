@@ -1,5 +1,5 @@
 # 🩺 Disease Prediction from Medical Data
-### CodeAlpha Internship — Task 4
+### CodeAlpha Internship — Task 3
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat&logo=python&logoColor=white)
 ![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.3.x-F7931E?style=flat&logo=scikit-learn&logoColor=white)
@@ -220,9 +220,9 @@ Despite threshold adjustment, 2 malignant tumors were missed. Inspecting those s
 ## 🗂️ Project Structure
 
 ```
-CodeAlpha_Task4/
+CodeAlpha_Task3/
 │
-├── CodeAlpha_Task4_Disease_Prediction.ipynb      # Main notebook
+├── CodeAlpha_Task3_Disease_Prediction.ipynb      # Main notebook
 ├── README.md                                     # This file
 ├── breast_cancer_svm_pipeline_v1.joblib          # Serialised model
 │
@@ -237,8 +237,8 @@ CodeAlpha_Task4/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Anas-Mohamed-Abdelghany/CodeAlpha_Task4.git
-   cd CodeAlpha_Task4
+   git clone https://github.com/Anas-Mohamed-Abdelghany/CodeAlpha_Task3.git
+   cd CodeAlpha_Task3
    ```
 
 2. **Install dependencies:**
@@ -247,7 +247,7 @@ CodeAlpha_Task4/
    ```
 
 3. **Run the notebook:**
-   Open `CodeAlpha_Task4_Disease_Prediction.ipynb` in Jupyter or Google Colab and run all cells sequentially.
+   Open `CodeAlpha_Task3_Disease_Prediction.ipynb` in Jupyter or Google Colab and run all cells sequentially.
 
    > The dataset is loaded automatically via `sklearn.datasets.load_breast_cancer()` — no download required.
 
@@ -268,7 +268,7 @@ CodeAlpha_Task4/
 ## 👤 Author
 
 **Anas Mohamed**
-CodeAlpha Machine Learning Internship — Task 4
+CodeAlpha Machine Learning Internship — Task 3
 [LinkedIn](https://www.linkedin.com/in/anas-mohamed-716959313/) · [GitHub](https://github.com/Anas-Mohamed-Abdelghany)
 
 ---
